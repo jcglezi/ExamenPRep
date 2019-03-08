@@ -1,31 +1,236 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Examen Practico";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+<!DOCTYPE html>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Exam Practico</title>
+</head>
+<body>
+    <style>
+        #mapa {
+            height: 450px;
+        }
+
+        .ui-dialog {
+            z-index: 1000 !important
+        }
+    </style>
+
+    <div id="mapa">
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
+
+    <table id="tablaPInteres" class="table table-striped table-bordered" style="width:100%">
+        <thead>
+            <tr>
+                <th>Descripción</th>
+                <th>Latitud</th>
+                <th>Longitud</th>
+                <th>Venta</th>
+                <th>Zona</th>
+                <th></th>
+            </tr>
+        </thead>
+    </table>
+
+    <div id="container" style="height: 400px"></div>
+
+    <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet" />
+    <link href="~/Content/leaflet.css" rel="stylesheet" />
+
+    <script src="~/Scripts/datatables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/Scripts/leaflet.js"></script>
+    <script src="~/Scripts/highcharts.js"></script>
+    <script src="~/Scripts/highcharts-3d.js"></script>
+    <script src="~/Scripts/exporting.js"></script>
+    <script src="~/Scripts/export-data.js"></script>
+
+    <script>
+            var miMapa = L.map('mapa').setView([19.432527, -99.133385], 12);
+
+            L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                maxZoom: 18,
+                id: 'mapbox.streets',
+                accessToken: 'pk.eyJ1IjoiYW50YWx1aXY4IiwiYSI6ImNqczl3NGc0ZzA1cDQzeW5xOHduMDcxNjQifQ.bgirnZIjnK5gPLj58JjD0g'
+            }).addTo(miMapa);
+
+
+
+            var Popup, dataTable;
+
+            $(document).ready(function () {
+                dataTable = $("#tablaPInteres").DataTable({
+                    "ajax": {
+                        "url": "/Home/ObtenerPuntoInteres",
+                        "type": "GET",
+                        "datatype": "json"
+                    },
+                    "columns": [
+                        { "data": "Descripcion" },
+                        { "data": "Latitud" },
+                        { "data": "Longitud" },
+                        { "data": "Venta" },
+                        { "data": "Zona" },
+                        {
+                            "data": "PInteresID", "render": function (data) {
+                                return "<a class = 'btn btn-primary btn-sm' style='color:white' onclick=PopupForm('@Url.Action("AgregarOEditar","PuntosInteres")/" + data + "')><i class='fa fa-edit' style='color:white'></i> Editar</a><a class = 'btn btn-danger btn-sm' style='color:white; margin-left:5px' onclick=Delete(" + data + ")><i class='fa fa-trash' style='color:white'></i> Borrar</a>"
+                            },
+                            "orderable": false,
+                            "searchable": false,
+                            "width": "180px"
+                        }
+                    ],
+                    "language": {
+                        "emptyTable": "No hay Resultados, Favor de registrar un nuevo sitio de interes con el botón <b>Agregar Nuevo</b>"
+                    },
+                    "createdRow": function (row, data) {
+                        LlenarMapa(data);
+                    }
+                });
+
+                InicializaGrafico();
+            });
+
+            function LlenarMapa(v) {
+                var marker = L.marker([v.Latitud, v.Longitud]).addTo(miMapa);
+                marker.bindPopup("<b>ID</b><br>" + v.PInteresID + "<br><b>Descripción</b><br>" + v.Descripcion + "<br><b>Zona</b><br>" + v.Zona + "<br><b>Venta</b><br>" + v.Venta).openPopup();
+
+            }
+
+            function PopupForm(url) {
+                var formDiv = $('<div/>');
+                $.get(url)
+                    .done(function (response) {
+                        formDiv.html(response);
+
+                        Popup = formDiv.dialog({
+                            autoOpen : true,
+                            resizable: false,
+                            title : 'Llenar Sitios de interes',
+                            height : 600,
+                            width: 700,
+                            close: function () {
+                                Popup.dialog('destroy').remove();
+                            }
+                        })
+                    });
+            }
+
+            function SubmitForm(form) {
+                $.validator.unobtrusive.parse(form);
+
+                if ($(form).valid()) {
+                    $.ajax({
+                        type: "POST",
+                        url: form.action,
+                        data: $(form).serialize(),
+                        success: function (data) {
+                            if (data.success == true) {
+                                Popup.dialog('close');
+                                miMapa.eachLayer(function (layer) {
+                                    miMapa.removeLayer(layer);
+                                });
+                                InicializaMapa();
+                                InicializaGrafico();
+                                dataTable.ajax.reload();
+                                $.notify(data.message, {
+                                    globalPosition: "top center",
+                                    className : "success"
+                                })
+                            }
+                        }
+                    });
+                }
+                return false;
+            }
+
+            function Delete(id) {
+                if (confirm('¿Estás seguro de eliminar este registro?')) {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("Borrar", "PuntosInteres")/' + id,
+                        success: function (data) {
+                            if (data.success == true) {
+
+                                miMapa.eachLayer(function (layer) {
+                                    miMapa.removeLayer(layer);
+                                });
+                                InicializaMapa();
+                                InicializaGrafico();
+
+                                dataTable.ajax.reload();
+                                $.notify(data.message, {
+                                    globalPosition: "top center",
+                                    className: "success"
+                                })
+                            }
+                        }
+                    });
+                }
+            }
+
+            function InicializaMapa() {
+
+                L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+                    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                    maxZoom: 18,
+                    id: 'mapbox.streets',
+                    accessToken: 'pk.eyJ1IjoiYW50YWx1aXY4IiwiYSI6ImNqczl3NGc0ZzA1cDQzeW5xOHduMDcxNjQifQ.bgirnZIjnK5gPLj58JjD0g'
+                }).addTo(miMapa);
+            }
+
+            function InicializaGrafico() {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("ObtenerDatosVenta","PuntosInteres")',
+                    success: function (data) {
+                        if (data != null) {
+                            CrearGrafico(data);
+                        }
+                    }
+                });
+            }
+
+
+            function CrearGrafico(data) {
+
+                Highcharts.chart('container', {
+                    chart: {
+                        type: 'pie',
+                        options3d: {
+                            enabled: true,
+                            alpha: 45,
+                            beta: 0
+                        }
+                    },
+                    title: {
+                        text: 'Ventas por Area'
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            depth: 35,
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                            }
+                        }
+                    },
+                    series: [{
+                        type: 'pie',
+                        name: 'Ventas',
+                        data: data
+                    }]
+                });
+
+            }
+    </script>
+</body>
+</html>

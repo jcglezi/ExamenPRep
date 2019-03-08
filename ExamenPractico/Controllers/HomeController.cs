@@ -26,5 +26,22 @@ namespace ExamenPractico.Controllers
 
             return View();
         }
+
+        public ActionResult ObtenerPuntoInteres()
+        {
+            using (DB_GEOModels geoModel = new DB_GEOModels())
+            {
+                var listPInteres = geoModel.PUNTOS_INTERES.Select(p => new {
+                    PInteresID = p.PInteresID,
+                    Latitud = p.Latitud,
+                    Longitud = p.Longitud,
+                    Descripcion = p.Descripcion,
+                    Venta = p.Venta,
+                    Zona = p.ZONA.Descripcion,
+                    ZonaID = p.ZonaID
+                }).ToList();
+                return Json(new { data = listPInteres }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }
