@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ExamenPracticoBDModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="PuntosInteres">
+          <Key>
+            <PropertyRef Name="PuntoInteres" />
+          </Key>
+          <Property Name="PuntoInteres" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Latitud" Type="decimal" Precision="10" Scale="5" />
+          <Property Name="Longitud" Type="decimal" Precision="10" Scale="5" />
+          <Property Name="Descripcion" Type="varchar" MaxLength="200" />
+          <Property Name="Venta" Type="decimal" Precision="10" Scale="5" />
+          <Property Name="IdZona" Type="int" />
+        </EntityType>
+        <EntityType Name="Zona">
+          <Key>
+            <PropertyRef Name="IdZona" />
+          </Key>
+          <Property Name="IdZona" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Descripcion" Type="varchar" MaxLength="255" />
+        </EntityType>
+        <Association Name="FK__PuntosInt__IdZon__47DBAE45">
+          <End Role="Zona" Type="Self.Zona" Multiplicity="0..1" />
+          <End Role="PuntosInteres" Type="Self.PuntosInteres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Zona">
+              <PropertyRef Name="IdZona" />
+            </Principal>
+            <Dependent Role="PuntosInteres">
+              <PropertyRef Name="IdZona" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PuntosInt__IdZon__48CFD27E">
+          <End Role="Zona" Type="Self.Zona" Multiplicity="0..1" />
+          <End Role="PuntosInteres" Type="Self.PuntosInteres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Zona">
+              <PropertyRef Name="IdZona" />
+            </Principal>
+            <Dependent Role="PuntosInteres">
+              <PropertyRef Name="IdZona" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ExamenPracticoBDModelStoreContainer">
+          <EntitySet Name="PuntosInteres" EntityType="Self.PuntosInteres" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Zona" EntityType="Self.Zona" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__PuntosInt__IdZon__47DBAE45" Association="Self.FK__PuntosInt__IdZon__47DBAE45">
+            <End Role="Zona" EntitySet="Zona" />
+            <End Role="PuntosInteres" EntitySet="PuntosInteres" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PuntosInt__IdZon__48CFD27E" Association="Self.FK__PuntosInt__IdZon__48CFD27E">
+            <End Role="Zona" EntitySet="Zona" />
+            <End Role="PuntosInteres" EntitySet="PuntosInteres" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ExamenPracticoBDModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="PuntosInteres">
+          <Key>
+            <PropertyRef Name="PuntoInteres" />
+          </Key>
+          <Property Name="PuntoInteres" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Latitud" Type="Decimal" Precision="10" Scale="5" />
+          <Property Name="Longitud" Type="Decimal" Precision="10" Scale="5" />
+          <Property Name="Descripcion" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Venta" Type="Decimal" Precision="10" Scale="5" />
+          <Property Name="IdZona" Type="Int32" />
+          <NavigationProperty Name="Zona" Relationship="Self.FK__PuntosInt__IdZon__47DBAE45" FromRole="PuntosInteres" ToRole="Zona" />
+          <NavigationProperty Name="Zona1" Relationship="Self.FK__PuntosInt__IdZon__48CFD27E" FromRole="PuntosInteres" ToRole="Zona" />
+        </EntityType>
+        <EntityType Name="Zona">
+          <Key>
+            <PropertyRef Name="IdZona" />
+          </Key>
+          <Property Name="IdZona" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Descripcion" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="PuntosInteres" Relationship="Self.FK__PuntosInt__IdZon__47DBAE45" FromRole="Zona" ToRole="PuntosInteres" />
+          <NavigationProperty Name="PuntosInteres1" Relationship="Self.FK__PuntosInt__IdZon__48CFD27E" FromRole="Zona" ToRole="PuntosInteres" />
+        </EntityType>
+        <Association Name="FK__PuntosInt__IdZon__47DBAE45">
+          <End Role="Zona" Type="Self.Zona" Multiplicity="0..1" />
+          <End Role="PuntosInteres" Type="Self.PuntosInteres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Zona">
+              <PropertyRef Name="IdZona" />
+            </Principal>
+            <Dependent Role="PuntosInteres">
+              <PropertyRef Name="IdZona" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PuntosInt__IdZon__48CFD27E">
+          <End Role="Zona" Type="Self.Zona" Multiplicity="0..1" />
+          <End Role="PuntosInteres" Type="Self.PuntosInteres" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Zona">
+              <PropertyRef Name="IdZona" />
+            </Principal>
+            <Dependent Role="PuntosInteres">
+              <PropertyRef Name="IdZona" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ExamenPracticoBD" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="PuntosInteres" EntityType="Self.PuntosInteres" />
+          <EntitySet Name="Zona" EntityType="Self.Zona" />
+          <AssociationSet Name="FK__PuntosInt__IdZon__47DBAE45" Association="Self.FK__PuntosInt__IdZon__47DBAE45">
+            <End Role="Zona" EntitySet="Zona" />
+            <End Role="PuntosInteres" EntitySet="PuntosInteres" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PuntosInt__IdZon__48CFD27E" Association="Self.FK__PuntosInt__IdZon__48CFD27E">
+            <End Role="Zona" EntitySet="Zona" />
+            <End Role="PuntosInteres" EntitySet="PuntosInteres" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ExamenPracticoBDModelStoreContainer" CdmEntityContainer="ExamenPracticoBD">
+          <EntitySetMapping Name="PuntosInteres">
+            <EntityTypeMapping TypeName="ExamenPracticoBDModel.PuntosInteres">
+              <MappingFragment StoreEntitySet="PuntosInteres">
+                <ScalarProperty Name="PuntoInteres" ColumnName="PuntoInteres" />
+                <ScalarProperty Name="Latitud" ColumnName="Latitud" />
+                <ScalarProperty Name="Longitud" ColumnName="Longitud" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="Venta" ColumnName="Venta" />
+                <ScalarProperty Name="IdZona" ColumnName="IdZona" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Zona">
+            <EntityTypeMapping TypeName="ExamenPracticoBDModel.Zona">
+              <MappingFragment StoreEntitySet="Zona">
+                <ScalarProperty Name="IdZona" ColumnName="IdZona" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
