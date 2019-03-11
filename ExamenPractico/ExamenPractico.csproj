@@ -219,6 +219,7 @@
     <Content Include="Models\ExamenPracticoModel.edmx.diagram">
       <DependentUpon>ExamenPracticoModel.edmx</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\export-data.js" />
     <Content Include="Scripts\exporting.js" />
